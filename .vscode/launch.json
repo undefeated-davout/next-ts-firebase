@@ -1,0 +1,32 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // server side debug
+      "type": "node",
+      "request": "attach",
+      "name": "Next.js: Server",
+      "skipFiles": ["<node_internals>/**"],
+      "port": 9229
+    },
+    {
+      // client side debug
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Next.js: Client",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "full stack debug",
+      "configurations": ["Next.js: Server", "Next.js: Client"]
+    }
+  ]
+}
+
+
