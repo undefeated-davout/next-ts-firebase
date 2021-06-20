@@ -10,6 +10,8 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
+auth.signOut();
+
 export default function Home() {
   const mydata: firebase.firestore.DocumentData[] = [];
   const [data, setData] = useState(mydata);
