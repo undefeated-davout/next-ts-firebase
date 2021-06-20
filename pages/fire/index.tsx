@@ -1,4 +1,7 @@
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
+
 import Layout from '../../components/Layout';
 import firebase from 'firebase';
 import '../../components/fire';
@@ -6,7 +9,7 @@ import '../../components/fire';
 const db = firebase.firestore();
 
 export default function Home() {
-  const mydata: Object[] = [];
+  const mydata: firebase.firestore.DocumentData[] = [];
   const [data, setData] = useState(mydata);
   const [message, setMessage] = useState('wait...');
 
@@ -15,17 +18,7 @@ export default function Home() {
       .get()
       .then((snapshot) => {
         snapshot.forEach((document) => {
-          const doc = document.data();
-          mydata.push(
-            <tr key={document.id}>
-              <td>
-                <a href={'/fire/del?id=' + document.id}>{document.id}</a>
-              </td>
-              <td>{doc.name}</td>
-              <td>{doc.mail}</td>
-              <td>{doc.age}</td>
-            </tr>,
-          );
+          mydata.push(document);
         });
         setData(mydata);
         setMessage('Firebase data.');
@@ -46,9 +39,26 @@ export default function Home() {
                 <th>Age</th>
               </tr>
             </thead>
-            <tbody>{data}</tbody>
+            <tbody>
+              {data.map((document) => {
+                const doc = document.data();
+                return (
+                  <tr key={document.id}>
+                    <td>
+                      <a href={'/fire/del?id=' + document.id}>{document.id}</a>
+                    </td>
+                    <td>{doc.name}</td>
+                    <td>{doc.mail}</td>
+                    <td>{doc.age}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
           </table>
         </div>
+        <Link href="/fire/add">
+          <Button variant="contained">add</Button>
+        </Link>
       </Layout>
     </div>
   );
