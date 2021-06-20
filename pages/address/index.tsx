@@ -87,10 +87,12 @@ export default function Index() {
             {data.map((document) => {
               const doc = document.data();
               return (
-                <li>
+                <li key={document.id}>
                   <Link href={`/address/info?id=${document.id}`}>
-                    {doc.flag ? '√' : ''}
-                    {doc.name} ({doc.mail})
+                    <Button>
+                      {doc.flag ? '√' : ''}
+                      {doc.name} ({doc.mail})
+                    </Button>
                   </Link>
                 </li>
               );
