@@ -10,8 +10,6 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-auth.signOut(); //☆ログアウトする
-
 export default function Home() {
   const mydata: firebase.firestore.DocumentData[] = [];
   const [data, setData] = useState(mydata);
@@ -31,7 +29,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (auth.currentUser != null) {
+    if (auth.currentUser === null) {
+      setData([]);
+    } else {
       db.collection('mydata')
         .get()
         .then((snapshot) => {
@@ -48,6 +48,16 @@ export default function Home() {
     <div>
       <Layout header="Next.js" title="Top page.">
         <div className="alert alert-primary text-center">
+          <Button
+            variant="contained"
+            onClick={() =>
+              auth.signOut().then(() => {
+                setMessage('logouted.');
+              })
+            }
+          >
+            SIGN OUT
+          </Button>
           <h5 className="mb-4">{message}</h5>
           <table className="table bg-white text-left">
             <thead>
