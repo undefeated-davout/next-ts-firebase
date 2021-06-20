@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Button from '@material-ui/core/Button';
 
 import Layout from '../../components/Layout';
@@ -58,6 +58,9 @@ export default function Home() {
         </div>
         <Link href="/fire/add">
           <Button variant="contained">add</Button>
+        </Link>
+        <Link href="/fire/find">
+          <Button variant="contained">find</Button>
         </Link>
       </Layout>
     </div>
