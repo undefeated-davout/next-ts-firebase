@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Button from '@material-ui/core/Button';
+import firebase from 'firebase';
 
 import Layout from '../../components/Layout';
-import firebase from 'firebase';
 import '../../components/fire';
 
 const db = firebase.firestore();
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+auth.signOut(); //☆ログアウトする
 
 export default function Home() {
   const mydata: firebase.firestore.DocumentData[] = [];
@@ -14,16 +18,31 @@ export default function Home() {
   const [message, setMessage] = useState('wait...');
 
   useEffect(() => {
-    db.collection('mydata')
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((document) => {
-          mydata.push(document);
-        });
-        setData(mydata);
-        setMessage('Firebase data.');
+    auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        if (result.user !== null) {
+          setMessage('logined: ' + result.user.displayName);
+        }
+      })
+      .catch((error) => {
+        setMessage('not logined.');
       });
   }, []);
+
+  useEffect(() => {
+    if (auth.currentUser != null) {
+      db.collection('mydata')
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((document) => {
+            mydata.push(document);
+          });
+          setData(mydata);
+          setMessage('Firebase data.');
+        });
+    }
+  }, [message]);
 
   return (
     <div>
@@ -40,19 +59,25 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {data.map((document) => {
-                const doc = document.data();
-                return (
-                  <tr key={document.id}>
-                    <td>
-                      <a href={'/fire/del?id=' + document.id}>{document.id}</a>
-                    </td>
-                    <td>{doc.name}</td>
-                    <td>{doc.mail}</td>
-                    <td>{doc.age}</td>
-                  </tr>
-                );
-              })}
+              {data.length > 0 ? (
+                data.map((document) => {
+                  const doc = document.data();
+                  return (
+                    <tr key={document.id}>
+                      <td>
+                        <a href={'/fire/del?id=' + document.id}>{document.id}</a>
+                      </td>
+                      <td>{doc.name}</td>
+                      <td>{doc.mail}</td>
+                      <td>{doc.age}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr key="1">
+                  <th>no data</th>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
